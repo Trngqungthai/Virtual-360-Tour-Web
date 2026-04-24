@@ -1,0 +1,311 @@
+import type { Locale } from "@/lib/locale";
+
+export function getAdminText(locale: Locale) {
+  if (locale === "vi") {
+    return {
+      layout: {
+        adminLabel: "Quản trị",
+        dashboardTitle: "Bảng điều khiển nội dung",
+        dashboardTab: "Dashboard",
+        addTourTab: "Thêm tour",
+        analyticsTab: "Analytics",
+        settingsTab: "Cài đặt site",
+        viewSite: "Xem website",
+        logout: "Đăng xuất"
+      },
+      login: {
+        access: "Truy cập quản trị",
+        title: "Quản lý tour, liên kết nhúng và nội dung landing page tại một nơi.",
+        description:
+          "Bảng quản trị dùng JSON local để bạn thêm, sửa, xoá tour và cập nhật website ngay lập tức.",
+        cardOne: "CMS đơn giản",
+        cardOneDescription: "Tạo và cập nhật tour mà không cần sửa code.",
+        cardTwo: "Xuất bản ngay",
+        cardTwoDescription: "Trang public đọc trực tiếp từ cùng nguồn dữ liệu.",
+        secureLogin: "Đăng nhập bảo mật",
+        welcome: "Chào mừng quay lại",
+        signinDescription: "Đăng nhập để quản lý danh sách tour và các liên kết nhúng.",
+        invalid: "Email hoặc mật khẩu không đúng.",
+        loggedOut: "Bạn đã đăng xuất.",
+        email: "Email",
+        password: "Mật khẩu",
+        signIn: "Đăng nhập",
+        signingIn: "Đang đăng nhập...",
+        publicSite: "Muốn xem website public?",
+        viewWebsite: "Xem website"
+      },
+      dashboard: {
+        created: "Tạo tour thành công.",
+        updated: "Cập nhật tour thành công.",
+        deleted: "Xoá tour thành công.",
+        notFound: "Không tìm thấy tour cần thao tác.",
+        totalTours: "Tổng số tour",
+        liveCategories: "Số danh mục",
+        newestUpdate: "Cập nhật mới nhất",
+        noData: "Chưa có dữ liệu",
+        tourManagement: "Quản lý tour",
+        allTours: "Danh sách tour",
+        searchPlaceholder: "Tìm theo tiêu đề, địa điểm, danh mục",
+        search: "Tìm kiếm",
+        thumbnail: "Ảnh",
+        title: "Tiêu đề",
+        category: "Danh mục",
+        location: "Địa điểm",
+        actions: "Thao tác",
+        edit: "Sửa",
+        delete: "Xoá",
+        noResults: "Không có tour nào khớp với từ khoá hiện tại."
+      },
+      analytics: {
+        kicker: "Phân tích tour",
+        title: "Theo dõi lượt xem và chuyển hướng",
+        description:
+          "Xem lượt vào tour, thời gian xem, lượt mở tour toàn cảnh và số lần bấm Khám Phá. Bạn có thể lọc theo ngày, tuần, tháng, năm hoặc từng dự án.",
+        period: "Khoảng thời gian",
+        project: "Dự án",
+        allProjects: "Tất cả dự án",
+        apply: "Xem báo cáo",
+        download: "Tải CSV",
+        range: "Khoảng dữ liệu",
+        visits: "Lượt vào tour",
+        panoramaOpens: "Lượt xem tour toàn cảnh",
+        exploreClicks: "Lượt bấm Khám Phá",
+        averageViewTime: "Thời gian xem trung bình",
+        totalViewTime: "Tổng thời gian xem",
+        projectReport: "Báo cáo theo dự án",
+        timeline: "Diễn biến theo thời gian",
+        projectTitle: "Tên dự án",
+        projectSlug: "Slug",
+        lastActivity: "Hoạt động gần nhất",
+        empty: "Chưa có dữ liệu analytics trong bộ lọc hiện tại.",
+        projectSummary: "Tổng hợp hiệu suất của từng tour.",
+        timelineSummary: "Xu hướng hoạt động trong khoảng thời gian đã chọn."
+      },
+      settings: {
+        updated: "Cập nhật cài đặt website thành công.",
+        missing: "Vui lòng điền đầy đủ các trường bắt buộc trước khi lưu.",
+        kicker: "Cài đặt website",
+        title: "Chỉnh sửa thương hiệu, trang chủ và chân trang",
+        description:
+          "Cập nhật tên thương hiệu, logo/avatar, link xem trước đầu trang, Zalo nhận tư vấn, thông tin liên hệ và mạng xã hội.",
+        backDashboard: "Quay lại Dashboard",
+        brand: "Thương hiệu",
+        brandTitle: "Tên page và avatar page",
+        brandName: "Tên thương hiệu",
+        brandLogoUrl: "Link logo / avatar",
+        brandLogoUpload: "Hoặc tải logo / avatar",
+        brandLogoHint:
+          "Logo này sẽ được dùng cho phần đầu trang và có thể dùng làm icon page nếu bạn upload ảnh local.",
+        homepage: "Trang chủ",
+        heroTitle: "Link xem trước và các chỉ số",
+        heroPreviewUrl: "Link iframe xem trước đầu trang",
+        stat: "Chỉ số",
+        value: "Giá trị",
+        labelEn: "Nhãn EN",
+        labelVi: "Nhãn VI",
+        contact: "Liên hệ",
+        contactTitle: "Thông tin liên hệ và Zalo",
+        phone: "Số điện thoại",
+        zalo: "Số Zalo",
+        email: "Email",
+        address: "Địa chỉ",
+        social: "Mạng xã hội",
+        socialTitle: "Link mạng xã hội ở chân trang",
+        facebook: "Link Facebook",
+        instagram: "Link Instagram",
+        linkedin: "Link LinkedIn",
+        save: "Lưu cài đặt",
+        saving: "Đang lưu..."
+      },
+      tourForm: {
+        title: "Tiêu đề",
+        category: "Danh mục",
+        location: "Địa điểm",
+        embedLink: "Link tour nhúng",
+        projectUrl: "Link trang chủ tour",
+        projectUrlHint: "Nút Khám Phá sẽ mở link này.",
+        mapEmbedLink: "Link Google Maps Embed",
+        mapHint:
+          "Để trống nếu bạn muốn hệ thống tự tạo Google Maps embed từ ô địa điểm.",
+        thumbnailUrl: "Link ảnh thumbnail",
+        thumbnailUpload: "Hoặc tải ảnh thumbnail",
+        description: "Mô tả",
+        projectDetailOne: "Chi tiết dự án 1",
+        projectDetailTwo: "Chi tiết dự án 2",
+        preview: "Xem trước",
+        previewEmpty: "Ảnh xem trước sẽ hiển thị ở đây",
+        previewHint:
+          "Bạn có thể dùng viewer local hoặc dán trực tiếp iframe URL bên ngoài.",
+        cancel: "Huỷ"
+      },
+      newTour: {
+        missing: "Vui lòng điền đầy đủ thông tin bắt buộc trước khi lưu.",
+        thumbnailRequired: "Vui lòng thêm link thumbnail hoặc tải ảnh lên.",
+        kicker: "Thêm tour mới",
+        title: "Tạo showcase mới",
+        description:
+          "Thêm tiêu đề, danh mục, thumbnail, link tour, link trang chủ dự án, Google Maps, mô tả và chi tiết dự án để xuất bản tour."
+      },
+      editTour: {
+        missing: "Vui lòng điền đầy đủ thông tin bắt buộc trước khi lưu.",
+        thumbnailRequired: "Vui lòng thêm link thumbnail hoặc tải ảnh lên.",
+        kicker: "Chỉnh sửa tour",
+        description:
+          "Cập nhật nội dung, thumbnail, link tour, link trang chủ dự án, chi tiết dự án và bản đồ. Thay đổi sẽ hiển thị trên website sau khi lưu."
+      }
+    };
+  }
+
+  return {
+    layout: {
+      adminLabel: "Admin",
+      dashboardTitle: "Content dashboard",
+      dashboardTab: "Dashboard",
+      addTourTab: "Add Tour",
+      analyticsTab: "Analytics",
+      settingsTab: "Site Settings",
+      viewSite: "View Site",
+      logout: "Logout"
+    },
+    login: {
+      access: "Admin Access",
+      title: "Manage tours, embeds, and landing page content in one place.",
+      description:
+        "The dashboard is backed by local JSON storage so you can add, edit, and remove tours immediately while keeping the public site in sync.",
+      cardOne: "Simple CMS",
+      cardOneDescription: "Create and update tours without touching code.",
+      cardTwo: "Instant publish",
+      cardTwoDescription: "Public pages refresh from the same data source.",
+      secureLogin: "Secure Login",
+      welcome: "Welcome back",
+      signinDescription: "Sign in to manage your tour inventory and embedded viewer links.",
+      invalid: "The email or password is incorrect.",
+      loggedOut: "You have been signed out.",
+      email: "Email",
+      password: "Password",
+      signIn: "Sign in",
+      signingIn: "Signing in...",
+      publicSite: "Need the public landing page instead?",
+      viewWebsite: "View the website"
+    },
+    dashboard: {
+      created: "Tour created successfully.",
+      updated: "Tour updated successfully.",
+      deleted: "Tour deleted successfully.",
+      notFound: "That tour could not be found.",
+      totalTours: "Total tours",
+      liveCategories: "Live categories",
+      newestUpdate: "Newest update",
+      noData: "No data",
+      tourManagement: "Tour Management",
+      allTours: "All tours",
+      searchPlaceholder: "Search title, location, category",
+      search: "Search",
+      thumbnail: "Thumbnail",
+      title: "Title",
+      category: "Category",
+      location: "Location",
+      actions: "Actions",
+      edit: "Edit",
+      delete: "Delete",
+      noResults: "No tours match the current search."
+    },
+    analytics: {
+      kicker: "Tour Analytics",
+      title: "Track views and redirects",
+      description:
+        "Review tour visits, view time, panorama opens, and Explore redirects. Filter by day, week, month, year, or a specific project.",
+      period: "Time range",
+      project: "Project",
+      allProjects: "All projects",
+      apply: "View report",
+      download: "Download CSV",
+      range: "Report range",
+      visits: "Tour visits",
+      panoramaOpens: "Panorama opens",
+      exploreClicks: "Explore redirects",
+      averageViewTime: "Average view time",
+      totalViewTime: "Total view time",
+      projectReport: "Project report",
+      timeline: "Timeline",
+      projectTitle: "Project",
+      projectSlug: "Slug",
+      lastActivity: "Last activity",
+      empty: "No analytics data found for the current filter.",
+      projectSummary: "Performance summary grouped by project.",
+      timelineSummary: "Activity trend across the selected time range."
+    },
+    settings: {
+      updated: "Site settings updated successfully.",
+      missing: "Please complete all required fields before saving.",
+      kicker: "Website Settings",
+      title: "Edit brand, homepage, and footer",
+      description:
+        "Update your brand name, logo/avatar, homepage preview link, consultation Zalo, contact details, and social links.",
+      backDashboard: "Back to Dashboard",
+      brand: "Brand",
+      brandTitle: "Page name and page avatar",
+      brandName: "Brand name",
+      brandLogoUrl: "Logo / avatar URL",
+      brandLogoUpload: "Or upload logo / avatar",
+      brandLogoHint:
+        "This image is used in the header and can also be used as the page icon when uploaded locally.",
+      homepage: "Homepage",
+      heroTitle: "Hero preview and stats",
+      heroPreviewUrl: "Hero preview iframe URL",
+      stat: "Stat",
+      value: "Value",
+      labelEn: "Label EN",
+      labelVi: "Label VI",
+      contact: "Contact",
+      contactTitle: "Contact information and Zalo",
+      phone: "Phone",
+      zalo: "Zalo number",
+      email: "Email",
+      address: "Address",
+      social: "Social Links",
+      socialTitle: "Footer social profiles",
+      facebook: "Facebook URL",
+      instagram: "Instagram URL",
+      linkedin: "LinkedIn URL",
+      save: "Save site settings",
+      saving: "Saving settings..."
+    },
+      tourForm: {
+        title: "Title",
+        category: "Category",
+        location: "Location",
+        embedLink: "Embed Link",
+        projectUrl: "Tour homepage URL",
+        projectUrlHint: "The Explore button opens this URL.",
+        mapEmbedLink: "Google Maps Embed Link",
+        mapHint:
+          "Leave this blank and the system will auto-generate a Google Maps embed from the location field.",
+        thumbnailUrl: "Thumbnail Image URL",
+        thumbnailUpload: "Or upload thumbnail",
+        description: "Description",
+        projectDetailOne: "Project detail 1",
+        projectDetailTwo: "Project detail 2",
+        preview: "Preview",
+        previewEmpty: "Thumbnail preview appears here",
+        previewHint:
+          "You can use the built-in local viewer demo or paste any embeddable external iframe URL.",
+      cancel: "Cancel"
+    },
+    newTour: {
+      missing: "Please complete all required fields before saving.",
+      thumbnailRequired: "Add a thumbnail URL or upload an image to continue.",
+      kicker: "Add New Tour",
+      title: "Create a new showcase",
+      description:
+        "Add the title, category, thumbnail, embed link, project homepage URL, Google Maps, description, and project details to publish a new tour."
+    },
+    editTour: {
+      missing: "Please complete all required fields before saving.",
+      thumbnailRequired: "Add a thumbnail URL or upload an image to continue.",
+      kicker: "Edit Tour",
+      description:
+        "Update the content, thumbnail, embed link, project homepage URL, project details, and map for this tour. Changes will appear on the public site after saving."
+    }
+  };
+}

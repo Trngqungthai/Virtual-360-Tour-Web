@@ -1,0 +1,33 @@
+{
+  "brandName": "VTCM Virtual 360",
+  "brandLogo": "/uploads/1776846049427-photo-2026-04-22-15-20-32.jpg",
+  "heroPreviewUrl": "https://geckodigital.co/vt/MaaniMuscatHotelSuites/",
+  "heroStats": [
+    {
+      "value": "10+",
+      "labelEn": "Captured spaces",
+      "labelVi": "Không gian đã số hoá"
+    },
+    {
+      "value": "5",
+      "labelEn": "Industries served",
+      "labelVi": "Lĩnh vực triển khai"
+    },
+    {
+      "value": "4.8x",
+      "labelEn": "Average engagement",
+      "labelVi": "Mức độ tương tác"
+    }
+  ],
+  "contact": {
+    "phone": "0768 040 229",
+    "zalo": "0768040229",
+    "email": "vtcm.v3d360@gmail.com",
+    "address": "20 Cộng Hoà, Phường Bảy Hiền, Hồ Chí Minh"
+  },
+  "socialLinks": {
+    "facebook": "https://www.facebook.com/profile.php?id=61569099452562",
+    "instagram": "https://www.facebook.com/profile.php?id=61569099452562",
+    "linkedin": "https://www.facebook.com/profile.php?id=61569099452562"
+  }
+}

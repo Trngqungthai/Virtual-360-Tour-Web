@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Virtual 360 Viewer</title>
+    <style>
+      :root {
+        color-scheme: dark;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        overflow: hidden;
+        font-family: Poppins, "Segoe UI", sans-serif;
+        background: #020617;
+        color: white;
+      }
+
+      .viewer {
+        position: relative;
+        min-height: 100vh;
+        isolation: isolate;
+        background: radial-gradient(circle at top, rgba(37, 99, 235, 0.28), transparent 26%),
+          #020617;
+      }
+
+      .scene {
+        position: absolute;
+        inset: 0;
+        background-position: 50% center;
+        background-repeat: no-repeat;
+        background-size: 108%;
+        transform: scale(1.06);
+        transition:
+          background-image 480ms ease,
+          background-size 280ms ease,
+          background-position 120ms linear;
+        cursor: grab;
+      }
+
+      .scene.dragging {
+        cursor: grabbing;
+      }
+
+      .overlay {
+        position: absolute;
+        inset: 0;
+        background:
+          linear-gradient(180deg, rgba(2, 6, 23, 0.24) 0%, rgba(2, 6, 23, 0.08) 28%, rgba(2, 6, 23, 0.78) 100%),
+          linear-gradient(90deg, rgba(2, 6, 23, 0.78) 0%, rgba(2, 6, 23, 0.3) 52%, rgba(2, 6, 23, 0.62) 100%);
+      }
+
+      .hud {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        min-height: 100vh;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 28px;
+      }
+
+      .topbar {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 20px;
+      }
+
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        background: rgba(255, 255, 255, 0.08);
+        padding: 10px 16px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        backdrop-filter: blur(12px);
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 88px;
+        height: 88px;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.22);
+        background: rgba(255, 255, 255, 0.08);
+        font-size: 28px;
+        font-weight: 700;
+        backdrop-filter: blur(16px);
+      }
+
+      .content {
+        max-width: 640px;
+      }
+
+      h1 {
+        margin: 18px 0 0;
+        font-size: clamp(30px, 5vw, 54px);
+        line-height: 1.04;
+      }
+
+      .location {
+        margin-top: 14px;
+        font-size: 15px;
+        color: rgba(226, 232, 240, 0.88);
+      }
+
+      .description {
+        margin-top: 14px;
+        max-width: 54ch;
+        font-size: 15px;
+        line-height: 1.8;
+        color: rgba(226, 232, 240, 0.82);
+      }
+
+      .hotspots {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 24px;
+      }
+
+      .hotspot {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        background: rgba(255, 255, 255, 0.08);
+        padding: 10px 14px;
+        font-size: 13px;
+        font-weight: 500;
+        backdrop-filter: blur(10px);
+      }
+
+      .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 999px;
+        background: #60a5fa;
+        box-shadow: 0 0 0 6px rgba(96, 165, 250, 0.14);
+      }
+
+      .bottombar {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .info {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 12px 18px;
+        font-size: 13px;
+        color: rgba(226, 232, 240, 0.8);
+      }
+
+      .controls {
+        display: inline-flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        width: fit-content;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        background: rgba(15, 23, 42, 0.44);
+        padding: 10px;
+        border-radius: 999px;
+        backdrop-filter: blur(18px);
+      }
+
+      .control {
+        width: 44px;
+        height: 44px;
+        border: 0;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.08);
+        color: white;
+        font-size: 18px;
+        cursor: pointer;
+        transition: transform 160ms ease, background-color 160ms ease;
+      }
+
+      .control:hover {
+        transform: translateY(-1px);
+        background: rgba(96, 165, 250, 0.22);
+      }
+
+      .control:active {
+        transform: translateY(0);
+      }
+
+      @media (max-width: 900px) {
+        .hud {
+          padding: 18px;
+        }
+
+        .topbar {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .badge {
+          width: 72px;
+          height: 72px;
+          font-size: 22px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="viewer">
+      <div class="scene" id="scene"></div>
+      <div class="overlay"></div>
+
+      <div class="hud">
+        <div class="topbar">
+          <div class="pill" id="categoryTag">Virtual 360 Experience</div>
+          <div class="badge">360</div>
+        </div>
+
+        <div class="content">
+          <div class="pill" id="sceneLabel">Immersive Preview</div>
+          <h1 id="title">Virtual 360 Viewer</h1>
+          <div class="location" id="location">Interactive panorama</div>
+          <p class="description" id="description">
+            Drag the scene or use the controls to simulate a guided 360 viewing
+            experience.
+          </p>
+          <div class="hotspots" id="hotspots"></div>
+        </div>
+
+        <div class="bottombar">
+          <div class="info">
+            <span id="infoPan">Drag to pan</span>
+            <span id="infoZoom">Use +/- to zoom</span>
+            <span id="infoEmbed">Built for iframe embedding</span>
+          </div>
+
+          <div class="controls">
+            <button class="control" id="left" type="button" aria-label="Pan left">&larr;</button>
+            <button class="control" id="right" type="button" aria-label="Pan right">&rarr;</button>
+            <button class="control" id="zoomIn" type="button" aria-label="Zoom in">+</button>
+            <button class="control" id="zoomOut" type="button" aria-label="Zoom out">&minus;</button>
+            <button class="control" id="center" type="button" aria-label="Re-center">&#9678;</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function getCookie(name) {
+        return document.cookie
+          .split("; ")
+          .find((entry) => entry.startsWith(`${name}=`))
+          ?.split("=")[1];
+      }
+
+      const locale = getCookie("virtual360-locale") === "en" ? "en" : "vi";
+      document.documentElement.lang = locale;
+
+      const viewerCopy = {
+        en: {
+          categoryTag: "Virtual 360 Experience",
+          sceneLabel: "Immersive Preview",
+          fallbackLocation: "Interactive panorama",
+          fallbackDescription:
+            "Drag the scene or use the controls to simulate a guided 360 viewing experience.",
+          infoPan: "Drag to pan",
+          infoZoom: "Use +/- to zoom",
+          infoEmbed: "Built for iframe embedding",
+          controls: {
+            left: "Pan left",
+            right: "Pan right",
+            zoomIn: "Zoom in",
+            zoomOut: "Zoom out",
+            center: "Re-center"
+          }
+        },
+        vi: {
+          categoryTag: "Trải nghiệm Virtual 360",
+          sceneLabel: "Xem trước sống động",
+          fallbackLocation: "Toàn cảnh tương tác",
+          fallbackDescription:
+            "Kéo khung cảnh hoặc dùng các nút điều khiển để mô phỏng trải nghiệm xem tour 360 có hướng dẫn.",
+          infoPan: "Kéo để xoay góc nhìn",
+          infoZoom: "Dùng +/- để phóng to thu nhỏ",
+          infoEmbed: "Sẵn sàng nhúng bằng iframe",
+          controls: {
+            left: "Xoay sang trái",
+            right: "Xoay sang phải",
+            zoomIn: "Phóng to",
+            zoomOut: "Thu nhỏ",
+            center: "Đưa về giữa"
+          }
+        }
+      };
+
+      const viewerText = viewerCopy[locale];
+
+      const scenes = {
+        "resort-lagoon": {
+          category: "Resort Preview",
+          label: "Lagoon Villa",
+          title: "Solstice Ocean Resort",
+          location: "Phu Quoc, Vietnam",
+          description:
+            "A sunlit lagoon view designed to capture premium leisure intent and highlight poolside amenities.",
+          image:
+            "https://images.unsplash.com/photo-1500375592092-40eb2168fd21?auto=format&fit=crop&w=2200&q=80",
+          hotspots: ["Lagoon Deck", "Private Pool", "Sunset Lounge"]
+        },
+        "apartment-living": {
+          category: "Apartment Preview",
+          label: "Signature Living Room",
+          title: "Lumina Riverside Residence",
+          location: "Hanoi, Vietnam",
+          description:
+            "A refined interior panorama for long-stay guests comparing layout, daylight, and finish quality.",
+          image:
+            "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=2200&q=80",
+          hotspots: ["Living Area", "Dining Zone", "River View"]
+        },
+        "hotel-suite": {
+          category: "Hotel Preview",
+          label: "Executive Suite",
+          title: "Azure Bay Hotel",
+          location: "Ho Chi Minh City, Vietnam",
+          description:
+            "A polished hospitality scene built to increase trust before booking and showcase suite inventory.",
+          image:
+            "https://images.unsplash.com/photo-1445019980597-93fa8acb246c?auto=format&fit=crop&w=2200&q=80",
+          hotspots: ["Bedroom", "Work Nook", "City Outlook"]
+        },
+        "school-campus": {
+          category: "Education Preview",
+          label: "Campus Arrival",
+          title: "Arcadia International School",
+          location: "Da Nang, Vietnam",
+          description:
+            "A welcoming campus scene that helps prospective families understand the environment before visiting.",
+          image:
+            "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=2200&q=80",
+          hotspots: ["Main Quad", "STEM Labs", "Student Commons"]
+        },
+        "real-estate-loft": {
+          category: "Real Estate Preview",
+          label: "Show Residence",
+          title: "Harbor Signature Residences",
+          location: "Thu Duc City, Vietnam",
+          description:
+            "A high-end residential panorama built to communicate flow, lifestyle, and premium finish detail.",
+          image:
+            "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=2200&q=80",
+          hotspots: ["Living Space", "Kitchen Island", "Balcony"]
+        },
+        "apartment-sky": {
+          category: "Apartment Preview",
+          label: "Skyline Suite",
+          title: "Opal Executive Suites",
+          location: "Da Nang, Vietnam",
+          description:
+            "An airy executive stay scene aimed at relocation, corporate housing, and lifestyle-led leasing.",
+          image:
+            "https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=2200&q=80",
+          hotspots: ["Bedroom", "Workspace", "Skyline View"]
+        },
+        "resort-spa": {
+          category: "Resort Preview",
+          label: "Wellness Escape",
+          title: "The Grove Wellness Resort",
+          location: "Nha Trang, Vietnam",
+          description:
+            "A calm panoramic spa-and-pool scene designed to evoke relaxation and destination desire.",
+          image:
+            "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&w=2200&q=80",
+          hotspots: ["Spa Pavilion", "Infinity Pool", "Garden Walk"]
+        },
+        "school-library": {
+          category: "Education Preview",
+          label: "Academic Hub",
+          title: "Meridian Business School",
+          location: "Ho Chi Minh City, Vietnam",
+          description:
+            "A contemporary academic panorama that highlights collaboration and modern learning environments.",
+          image:
+            "https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?auto=format&fit=crop&w=2200&q=80",
+          hotspots: ["Library", "Study Pods", "Collaboration Zone"]
+        }
+      };
+
+      const params = new URLSearchParams(window.location.search);
+      const currentScene = scenes[params.get("scene")] || scenes["resort-lagoon"];
+
+      const sceneElement = document.getElementById("scene");
+      const titleElement = document.getElementById("title");
+      const locationElement = document.getElementById("location");
+      const descriptionElement = document.getElementById("description");
+      const categoryTagElement = document.getElementById("categoryTag");
+      const sceneLabelElement = document.getElementById("sceneLabel");
+      const hotspotsElement = document.getElementById("hotspots");
+      const infoPanElement = document.getElementById("infoPan");
+      const infoZoomElement = document.getElementById("infoZoom");
+      const infoEmbedElement = document.getElementById("infoEmbed");
+
+      const state = {
+        position: 50,
+        zoom: 108,
+        dragging: false,
+        lastX: 0
+      };
+
+      function clamp(value, min, max) {
+        return Math.max(min, Math.min(max, value));
+      }
+
+      function renderScene() {
+        sceneElement.style.backgroundImage = `url("${currentScene.image}")`;
+        sceneElement.style.backgroundPosition = `${state.position}% center`;
+        sceneElement.style.backgroundSize = `${state.zoom}%`;
+
+        titleElement.textContent = currentScene.title;
+        locationElement.textContent = currentScene.location || viewerText.fallbackLocation;
+        descriptionElement.textContent =
+          currentScene.description || viewerText.fallbackDescription;
+        categoryTagElement.textContent = viewerText.categoryTag;
+        sceneLabelElement.textContent = viewerText.sceneLabel;
+        infoPanElement.textContent = viewerText.infoPan;
+        infoZoomElement.textContent = viewerText.infoZoom;
+        infoEmbedElement.textContent = viewerText.infoEmbed;
+
+        document.getElementById("left").setAttribute("aria-label", viewerText.controls.left);
+        document
+          .getElementById("right")
+          .setAttribute("aria-label", viewerText.controls.right);
+        document
+          .getElementById("zoomIn")
+          .setAttribute("aria-label", viewerText.controls.zoomIn);
+        document
+          .getElementById("zoomOut")
+          .setAttribute("aria-label", viewerText.controls.zoomOut);
+        document
+          .getElementById("center")
+          .setAttribute("aria-label", viewerText.controls.center);
+
+        hotspotsElement.innerHTML = currentScene.hotspots
+          .map(
+            (hotspot) =>
+              `<div class="hotspot"><span class="dot"></span><span>${hotspot}</span></div>`
+          )
+          .join("");
+      }
+
+      function pan(delta) {
+        state.position = clamp(state.position + delta, 18, 82);
+        renderScene();
+      }
+
+      function zoom(delta) {
+        state.zoom = clamp(state.zoom + delta, 100, 132);
+        renderScene();
+      }
+
+      function handleStart(clientX) {
+        state.dragging = true;
+        state.lastX = clientX;
+        sceneElement.classList.add("dragging");
+      }
+
+      function handleMove(clientX) {
+        if (!state.dragging) {
+          return;
+        }
+
+        const delta = clientX - state.lastX;
+        state.lastX = clientX;
+        pan(delta * -0.05);
+      }
+
+      function handleEnd() {
+        state.dragging = false;
+        sceneElement.classList.remove("dragging");
+      }
+
+      sceneElement.addEventListener("mousedown", (event) => handleStart(event.clientX));
+      window.addEventListener("mousemove", (event) => handleMove(event.clientX));
+      window.addEventListener("mouseup", handleEnd);
+
+      sceneElement.addEventListener(
+        "touchstart",
+        (event) => handleStart(event.touches[0].clientX),
+        { passive: true }
+      );
+      window.addEventListener(
+        "touchmove",
+        (event) => handleMove(event.touches[0].clientX),
+        { passive: true }
+      );
+      window.addEventListener("touchend", handleEnd);
+
+      document.getElementById("left").addEventListener("click", () => pan(-3));
+      document.getElementById("right").addEventListener("click", () => pan(3));
+      document.getElementById("zoomIn").addEventListener("click", () => zoom(4));
+      document.getElementById("zoomOut").addEventListener("click", () => zoom(-4));
+      document.getElementById("center").addEventListener("click", () => {
+        state.position = 50;
+        state.zoom = 108;
+        renderScene();
+      });
+
+      window.setInterval(() => {
+        if (state.dragging) {
+          return;
+        }
+
+        const nextDelta = state.position > 78 ? -0.35 : state.position < 22 ? 0.35 : 0.18;
+        pan(nextDelta);
+      }, 120);
+
+      renderScene();
+    </script>
+  </body>
+</html>
